@@ -72,4 +72,6 @@ jobs:
           pip install -q conan
           cmd /c attrib "C:\Program Files (x86)\Windows Kits\10\include\wdf" +H
       - name: build
-        run: cd packaging && python ./build vagrant msvc2015-win64 --clean --version - - ../wkhtmltopdf
+        run: |
+          conan profile detect
+          cd packaging && python ./build vagrant msvc2015-win64 --clean --version - - ../wkhtmltopdf
