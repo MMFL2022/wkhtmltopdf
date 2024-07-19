@@ -865,9 +865,9 @@ void PdfConverterPrivate::measuringHeadersLoaded(bool ok) {
         if (obj.measuringFooter) {
             // add spacing to prevent moving footer out of page
             qreal calculatedFooterHeight = calculateHeaderHeight(obj, *obj.measuringFooter);
-            log << "853:calculatedHeaderHeight " << std::to_string(calculatedFooterHeight) << std::endl;
-            log << "854:obj.settings.header.spacing " << std::to_string(obj.settings.footer.spacing) << std::endl;
-            log << "855:obj.settings.header.margin " << std::to_string(obj.settings.footer.margin) << std::endl;
+            log << "853:calculatedFooterHeight " << std::to_string(calculatedFooterHeight) << std::endl;
+            log << "854:obj.settings.footer.spacing " << std::to_string(obj.settings.footer.spacing) << std::endl;
+            log << "855:obj.settings.footer.margin " << std::to_string(obj.settings.footer.margin) << std::endl;
             
             qreal reserveHeight = calculatedFooterHeight + obj.settings.footer.spacing + obj.settings.footer.margin;
             log << "845:obj.footerReserveHeight " << std::to_string(reserveHeight) << std::endl;
