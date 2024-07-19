@@ -283,7 +283,11 @@ static void appendLineToFile(string line)
     std::ofstream file;
     //can't enable exception now because of gcc bug that raises ios_base::failure with useless message
     //file.exceptions(file.exceptions() | std::ios::failbit);
+#ifdef Q_OS_WIN32
+    file.open("C:\\TEMP\\wkhtml-debug.txt", std::ios::out | std::ios::app);
+#else
     file.open("/tmp/wkhtml-debug.txt", std::ios::out | std::ios::app);
+#endif
     if (file.fail())
         throw std::ios_base::failure(std::strerror(errno));
 
