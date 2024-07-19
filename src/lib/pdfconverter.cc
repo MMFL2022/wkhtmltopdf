@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <qapplication.h>
 #include <qfileinfo.h>
+#include <ios>
 #include <fstream>
 #ifdef Q_OS_WIN32
 #include <fcntl.h>
@@ -266,13 +267,13 @@ qreal PdfConverterPrivate::calculateHeaderHeight(PageObject & object, QWebPage &
     QWebPrinter wp(header.mainFrame(), testPrinter, *testPainter);
     qreal height = wp.elementLocation(header.mainFrame()->findFirstElement("body")).second.height();
     qreal width = wp.elementLocation(header.mainFrame()->findFirstElement("body")).second.width();
-    appendLineToFile("269:qreal height " height);
-    appendLineToFile("270:qreal width " width);
+    appendLineToFile("270:qreal height " height);
+    appendLineToFile("271:qreal width " width);
 
     delete testPainter;
     delete testPrinter;
 
-    appendLineToFile("275:returned height " (height / PdfConverter::millimeterToPointMultiplier));
+    appendLineToFile("276:returned height " (height / PdfConverter::millimeterToPointMultiplier));
     return (height / PdfConverter::millimeterToPointMultiplier);
 }
 
@@ -396,22 +397,27 @@ void PdfConverterPrivate::pagesLoaded(bool ok) {
 #ifdef __EXTENSIVE_WKHTMLTOPDF_QT_HACK__
     double maxHeaderHeight = objects[0].headerReserveHeight;
     double maxFooterHeight = objects[0].footerReserveHeight;
-    appendLineToFile("399:maxHeaderHeight " maxHeaderHeight);
-    appendLineToFile("400:maxFooterHeight " maxFooterHeight);
+    appendLineToFile("400:maxHeaderHeight " maxHeaderHeight);
+    appendLineToFile("401:maxFooterHeight " maxFooterHeight);
     for (QList<PageObject>::iterator i=objects.begin(); i != objects.end(); ++i) {
         PageObject & o=*i;
         maxHeaderHeight = std::max(maxHeaderHeight, o.headerReserveHeight);
         maxFooterHeight = std::max(maxFooterHeight, o.footerReserveHeight);
     }
-    appendLineToFile("406:page margins - left" settings.margin.left.first);
-    appendLineToFile("407:page margins - top" maxHeaderHeight);
-    appendLineToFile("408:page margins - right" settings.margin.right.first);
-    appendLineToFile("409:page margins - bottom" maxFooterHeight);
-    appendLineToFile("410:page margins - unit" settings.margin.left.second);
+    appendLineToFile("407:page margins - left" settings.margin.left.first);
+    appendLineToFile("408:page margins - top" maxHeaderHeight);
+    appendLineToFile("409:page margins - right" settings.margin.right.first);
+    appendLineToFile("410:page margins - bottom" maxFooterHeight);
+    appendLineToFile("411:page margins - unit" settings.margin.left.second);
     printer->setPageMargins(settings.margin.left.first, maxHeaderHeight,
                                 settings.margin.right.first, maxFooterHeight,
                                 settings.margin.left.second);
 #else
+    appendLineToFile("416:page margins - left" settings.margin.left.first);
+    appendLineToFile("417:page margins - top" settings.margin.top.first);
+    appendLineToFile("418:page margins - right" settings.margin.right.first);
+    appendLineToFile("419:page margins - bottom" settings.margin.bottom.first);
+    appendLineToFile("420:page margins - unit" settings.margin.left.second);
     printer->setPageMargins(settings.margin.left.first, settings.margin.top.first,
                                 settings.margin.right.first, settings.margin.bottom.first,
                                 settings.margin.left.second);
@@ -833,9 +839,9 @@ void PdfConverterPrivate::measuringHeadersLoaded(bool ok) {
         if (obj.measuringHeader) {
             // add spacing to prevent moving header out of page
             qreal calculatedHeaderHeight = calculateHeaderHeight(obj, *obj.measuringHeader);
-            appendLineToFile("836:calculatedHeaderHeight " calculatedHeaderHeight);
-            appendLineToFile("837:obj.settings.header.spacing " obj.settings.header.spacing);
-            appendLineToFile("838:obj.settings.header.margin " obj.settings.header.margin);
+            appendLineToFile("842:calculatedHeaderHeight " calculatedHeaderHeight);
+            appendLineToFile("843:obj.settings.header.spacing " obj.settings.header.spacing);
+            appendLineToFile("844:obj.settings.header.margin " obj.settings.header.margin);
             
             qreal reserveHeight = calculatedHeaderHeight + obj.settings.header.spacing + obj.settings.header.margin;
             obj.headerReserveHeight = reserveHeight;
@@ -844,9 +850,9 @@ void PdfConverterPrivate::measuringHeadersLoaded(bool ok) {
         if (obj.measuringFooter) {
             // add spacing to prevent moving footer out of page
             qreal calculatedFooterHeight = calculateHeaderHeight(obj, *obj.measuringFooter);
-            appendLineToFile("847:calculatedFooterHeight " calculatedFooterHeight);
-            appendLineToFile("848:obj.settings.footer.spacing " obj.settings.footer.spacing);
-            appendLineToFile("849:obj.settings.footer.margin " obj.settings.footer.margin);
+            appendLineToFile("853:calculatedFooterHeight " calculatedFooterHeight);
+            appendLineToFile("854:obj.settings.footer.spacing " obj.settings.footer.spacing);
+            appendLineToFile("855:obj.settings.footer.margin " obj.settings.footer.margin);
             
             qreal reserveHeight = calculatedFooterHeight + obj.settings.footer.spacing + obj.settings.footer.margin;
             obj.footerReserveHeight = reserveHeight;
