@@ -281,6 +281,10 @@ QPrinter * PdfConverterPrivate::createPrinter(const QString & tempFile) {
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setResolution(settings.dpi);
 
+    printer->setPageMargins(settings.margin.left.first, 0,
+                                settings.margin.right.first, 0,
+                                settings.margin.left.second);
+
     if ((settings.size.height.first != -1) && (settings.size.width.first != -1)) {
         printer->setPaperSize(QSizeF(settings.size.width.first,settings.size.height.first), settings.size.height.second);
     } else {
