@@ -265,7 +265,6 @@ qreal PdfConverterPrivate::calculateHeaderHeight(PageObject & object, QWebPage &
 
     QWebPrinter wp(header.mainFrame(), testPrinter, *testPainter);
     qreal height = wp.elementLocation(header.mainFrame()->findFirstElement("body")).second.height();
-    qreal width = wp.elementLocation(header.mainFrame()->findFirstElement("body")).second.width();
     
     delete testPainter;
     delete testPrinter;
@@ -384,7 +383,8 @@ void PdfConverterPrivate::pagesLoaded(bool ok) {
         PageObject & o=*i;
         maxHeaderHeight = std::max(maxHeaderHeight, o.headerReserveHeight);
         maxFooterHeight = std::max(maxFooterHeight, o.footerReserveHeight);
-
+    }
+	    
     printer->setPageMargins(settings.margin.left.first, maxHeaderHeight,
                                 settings.margin.right.first, maxFooterHeight,
                                 settings.margin.left.second);
