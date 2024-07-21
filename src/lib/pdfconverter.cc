@@ -292,12 +292,20 @@ qreal PdfConverterPrivate::calculateHeaderHeight(PageObject & object, QWebPage &
 #endif
 
 QPrinter * PdfConverterPrivate::createPrinter(const QString & tempFile) {
+  #ifdef Q_OS_WIN32
+      std::ofstream log("C:\\TEMP\\wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
+  #else
+      std::ofstream log("/tmp/wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
+  #endif
+
     QPrinter * printer = new QPrinter(settings.resolution);
+    log << "302:settings.resolution " << std::to_string(settings.resolution) << std::endl;
     //Tell the printer object to print the file <out>
 
     printer->setOutputFileName(tempFile);
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setResolution(settings.dpi);
+    log << "308:settings.dpi " << std::to_string(settings.dpi) << std::endl;
 
     printer->setPageMargins(settings.margin.left.first, 0,
                                 settings.margin.right.first, 0,
@@ -305,8 +313,12 @@ QPrinter * PdfConverterPrivate::createPrinter(const QString & tempFile) {
 
     if ((settings.size.height.first != -1) && (settings.size.width.first != -1)) {
         printer->setPaperSize(QSizeF(settings.size.width.first,settings.size.height.first), settings.size.height.second);
+        log << "316:custom size width " << std::to_string(settings.size.width.first) << std::endl;
+        log << "317:custom size height " << std::to_string(settings.size.height.first) << std::endl;
+        log << "318:custom size unit " << std::to_string(settings.size.height.second) << std::endl;
     } else {
         printer->setPaperSize(settings.size.pageSize);
+        log << "321:page size " << std::to_string(settings.size.pageSize) << std::endl;
     }
 
     printer->setOrientation(settings.orientation);
