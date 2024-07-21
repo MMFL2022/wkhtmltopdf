@@ -18,7 +18,7 @@ jobs:
       - name: checkout packaging
         uses: actions/checkout@v2
         with:
-          repository: wkhtmltopdf/packaging
+          repository: MMFL2022/packaging
           path: packaging
       - name: configure docker
         run:  |
@@ -39,7 +39,7 @@ jobs:
       - name: checkout packaging
         uses: actions/checkout@v2
         with:
-          repository: wkhtmltopdf/packaging
+          repository: MMFL2022/packaging
           path: packaging
       - name: setup build environment
         run: |
