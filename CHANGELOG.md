@@ -1,6 +1,6 @@
-v0.12.7.16 (2024-07-20)
+v0.12.7-k (2024-07-20)
 --------------------
-* added logging for debug...
+* added options to specify a header and footer margin
 
 v0.12.7 (unreleased)
 --------------------

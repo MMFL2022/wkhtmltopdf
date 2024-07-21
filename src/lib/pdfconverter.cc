@@ -150,13 +150,6 @@ PdfConverterPrivate::~PdfConverterPrivate() {
 }
 
 void PdfConverterPrivate::beginConvert() {
-#ifdef Q_OS_WIN32
-    std::ofstream log("C:\\TEMP\\wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-#else
-    std::ofstream log("/tmp/wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-#endif
-  log << "154:beginConvert\n";
-
 	error=false;
 	progressString = "0%";
 	currentPhase=0;
@@ -274,38 +267,21 @@ qreal PdfConverterPrivate::calculateHeaderHeight(PageObject & object, QWebPage &
     qreal height = wp.elementLocation(header.mainFrame()->findFirstElement("body")).second.height();
     qreal width = wp.elementLocation(header.mainFrame()->findFirstElement("body")).second.width();
     
-#ifdef Q_OS_WIN32
-    std::ofstream log("C:\\TEMP\\wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-#else
-    std::ofstream log("/tmp/wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-#endif
-    log << "270:qreal height " << std::to_string(height) << std::endl;
-    log << "270:qreal width " << std::to_string(width) << std::endl;
-
     delete testPainter;
     delete testPrinter;
 
-    log << "276:returned height " << std::to_string((height / PdfConverter::millimeterToPointMultiplier)) << std::endl;
     return (height / PdfConverter::millimeterToPointMultiplier);
 }
 
 #endif
 
 QPrinter * PdfConverterPrivate::createPrinter(const QString & tempFile) {
-  #ifdef Q_OS_WIN32
-      std::ofstream log("C:\\TEMP\\wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-  #else
-      std::ofstream log("/tmp/wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-  #endif
-
     QPrinter * printer = new QPrinter(settings.resolution);
-    log << "302:settings.resolution " << std::to_string(settings.resolution) << std::endl;
     //Tell the printer object to print the file <out>
 
     printer->setOutputFileName(tempFile);
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setResolution(settings.dpi);
-    log << "308:settings.dpi " << std::to_string(settings.dpi) << std::endl;
 
     printer->setPageMargins(settings.margin.left.first, 0,
                                 settings.margin.right.first, 0,
@@ -313,17 +289,13 @@ QPrinter * PdfConverterPrivate::createPrinter(const QString & tempFile) {
 
     if ((settings.size.height.first != -1) && (settings.size.width.first != -1)) {
         printer->setPaperSize(QSizeF(settings.size.width.first,settings.size.height.first), settings.size.height.second);
-        log << "316:custom size width " << std::to_string(settings.size.width.first) << std::endl;
-        log << "317:custom size height " << std::to_string(settings.size.height.first) << std::endl;
-        log << "318:custom size unit " << std::to_string(settings.size.height.second) << std::endl;
     } else {
         printer->setPaperSize(settings.size.pageSize);
-        log << "321:page size " << std::to_string(settings.size.pageSize) << std::endl;
     }
 
     printer->setOrientation(settings.orientation);
     printer->setColorMode(settings.colorMode);
-    printer->setCreator("wkhtmltopdf " STRINGIZE(FULL_VERSION));
+    printer->setCreator("Keller " STRINGIZE(FULL_VERSION));
 
     return printer;
 }
@@ -408,35 +380,15 @@ void PdfConverterPrivate::pagesLoaded(bool ok) {
     double maxHeaderHeight = objects[0].headerReserveHeight;
     double maxFooterHeight = objects[0].footerReserveHeight;
     
-#ifdef Q_OS_WIN32
-    std::ofstream log("C:\\TEMP\\wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-#else
-    std::ofstream log("/tmp/wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-#endif
-    log << "400:maxHeaderHeight " << std::to_string(maxHeaderHeight) << std::endl;
-    log << "401:maxFooterHeight " << std::to_string(maxFooterHeight) << std::endl;
-    
     for (QList<PageObject>::iterator i=objects.begin(); i != objects.end(); ++i) {
         PageObject & o=*i;
         maxHeaderHeight = std::max(maxHeaderHeight, o.headerReserveHeight);
         maxFooterHeight = std::max(maxFooterHeight, o.footerReserveHeight);
-    }
-    log << "407:page margins - left " << std::to_string(settings.margin.left.first) << std::endl;
-    log << "408:page margins - top " << std::to_string(maxHeaderHeight) << std::endl;
-    log << "409:page margins - right " << std::to_string(settings.margin.right.first) << std::endl;
-    log << "410:page margins - bottom " << std::to_string(maxFooterHeight) << std::endl;
-    log << "411:page margins - unit " << std::to_string(settings.margin.left.second) << std::endl;
 
     printer->setPageMargins(settings.margin.left.first, maxHeaderHeight,
                                 settings.margin.right.first, maxFooterHeight,
                                 settings.margin.left.second);
 #else
-    log << "416:page margins - left " << std::to_string(settings.margin.left.first) << std::endl;
-    log << "417:page margins - top " << std::to_string(settings.margin.top.first) << std::endl;
-    log << "418:page margins - right " << std::to_string(settings.margin.right.first) << std::endl;
-    log << "419:page margins - bottom " << std::to_string(settings.margin.bottom.first) << std::endl;
-    log << "420:page margins - unit " << std::to_string(settings.margin.left.second) << std::endl;
-
     printer->setPageMargins(settings.margin.left.first, settings.margin.top.first,
                                 settings.margin.right.first, settings.margin.bottom.first,
                                 settings.margin.left.second);
@@ -450,7 +402,7 @@ void PdfConverterPrivate::pagesLoaded(bool ok) {
 
 	printer->setOrientation(settings.orientation);
 	printer->setColorMode(settings.colorMode);
-	printer->setCreator("wkhtmltopdf " STRINGIZE(FULL_VERSION));
+	printer->setCreator("Keller " STRINGIZE(FULL_VERSION));
 
 	if (!printer->isValid()) {
 		emit out.error("Unable to write to destination");
@@ -853,36 +805,19 @@ void PdfConverterPrivate::measuringHeadersLoaded(bool ok) {
     }
 
 #ifdef __EXTENSIVE_WKHTMLTOPDF_QT_HACK__
-    
-    #ifdef Q_OS_WIN32
-        std::ofstream log("C:\\TEMP\\wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-    #else
-        std::ofstream log("/tmp/wkhtml-debug.txt", std::ios_base::app | std::ios_base::out);
-    #endif
-
     for (int d=0; d < objects.size(); ++d) {
         PageObject & obj = objects[d];
         if (obj.measuringHeader) {
             // add spacing to prevent moving header out of page
             qreal calculatedHeaderHeight = calculateHeaderHeight(obj, *obj.measuringHeader);
-            log << "842:calculatedHeaderHeight " << std::to_string(calculatedHeaderHeight) << std::endl;
-            log << "843:obj.settings.header.spacing " << std::to_string(obj.settings.header.spacing) << std::endl;
-            log << "844:obj.settings.header.margin " << std::to_string(obj.settings.header.margin) << std::endl;
-            
             qreal reserveHeight = calculatedHeaderHeight + obj.settings.header.spacing + obj.settings.header.margin;
-            log << "845:obj.headerReserveHeight " << std::to_string(reserveHeight) << std::endl;
             obj.headerReserveHeight = reserveHeight;
         }
 
         if (obj.measuringFooter) {
             // add spacing to prevent moving footer out of page
             qreal calculatedFooterHeight = calculateHeaderHeight(obj, *obj.measuringFooter);
-            log << "853:calculatedFooterHeight " << std::to_string(calculatedFooterHeight) << std::endl;
-            log << "854:obj.settings.footer.spacing " << std::to_string(obj.settings.footer.spacing) << std::endl;
-            log << "855:obj.settings.footer.margin " << std::to_string(obj.settings.footer.margin) << std::endl;
-            
             qreal reserveHeight = calculatedFooterHeight + obj.settings.footer.spacing + obj.settings.footer.margin;
-            log << "845:obj.footerReserveHeight " << std::to_string(reserveHeight) << std::endl;
             obj.footerReserveHeight = reserveHeight;
         }
     }
