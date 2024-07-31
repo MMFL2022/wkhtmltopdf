@@ -1,0 +1,3 @@
+If updating QT source, run this from the wkhtmltopdf repo root
+This will update the wkhtmltopdf source with the latest submodule commit pushed to origin for QT
+git submodule update --remote --merge
